@@ -37,6 +37,7 @@
             created() {
                 //  这一步数据监听 属性 方法 watch 事件的注册都已经完成,但是页面还没有渲染,不存在dom元素
                 // 不要在这一步进行dom操作,服务器端渲染期间created不会被触发
+                //  可以在这里发送请求
                 console.log('vue实例创建完毕', this.name, this.$refs.p)
             },
             beforeMount() {
