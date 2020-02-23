@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>router-link的to属性</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+
+        <!-- 字符串 -->
+        <router-link to="home">Home</router-link>
+        <!-- 渲染结果 -->
+        <!-- <a href="home">Home</a> -->
+
+        <!-- 使用 v-bind 的 JS 表达式 -->
+        <router-link v-bind:to="'home'">Home</router-link>
+
+        <!-- 不写 v-bind 也可以，就像绑定别的属性一样 -->
+        <router-link :to="'home'">Home</router-link>
+
+        <!-- 同上 -->
+        <router-link :to="{ path: 'home' }">Home</router-link>
+
+        <!-- 命名的路由 -->
+        <!-- 
+            使用命名路由，传参只能配合 params 参数 ,
+            获取参数，使用 $route.params.属性名
+        -->
+        <router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
+
+        <!-- 带查询参数，下面的结果为 /register?plan=private -->
+         <!-- 
+             使用路径，则配合 query 参数, 
+             获取参数使用 $route.query.属性名
+        -->
+        <router-link :to="{ path: 'register', query: { plan: 'private' }}">Register</router-link>
+    </div>
+    <script>
+        const home = {
+            template: `
+                <div>我是home页面</div>
+            `
+        }
+
+        const user = {
+            template: `
+                <div>
+                    <p>我是 user 页面 </p>
+                    <p>我的 userId 是：{{$route.params.userId}}</p>
+                </div>
+            `
+        }
+
+        const register = {
+            template: `
+                <div>
+                    <p>我是 register 页面 </p>
+                    <p>我的 plan 属性：{{$route.query.plan}}</p>
+                    <button @click="show">show</button>
+                </div>
+            `,
+            methods:{
+                show(){
+                    console.log(this.$route.query)
+                }
+            }
+        }
+
+        const routes = [
+            { path: '/home', component: home },
+            { name: 'user', path: '/user', component: user },
+            { path: '/register', component: register }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重定向</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+        <router-link to="/a">to a</router-link>
+        <router-link to="/b">to b</router-link>
+    </div>
+
+    <script>
+        const a = {
+            template: `
+                <div>
+                    <p>我是 a 页面 </p>
+                </div>
+            `
+        }
+
+        const b = {
+            template: `
+                <div>
+                    <p>我是 b 页面 </p>
+                </div>
+            `
+        }
+
+        const router = new VueRouter({
+            routes: [
+                //redirect 重定向，现在点击 a 会重定向到b 
+                { path: '/a', component: a, redirect: '/b' },
+                { path: '/b', component: b },
+            ]
+        })
+
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>router-link的appendt和tag属性</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+        <router-link to="/a">A</router-link>
+        <router-link to="/b">B</router-link>
+    </div>
+
+    <script>
+        /*
+        * 1.append
+        * 默认值: false
+        * 设置 append 属性后，则在当前 (相对) 路径前添加基路径。
+        * 例如，我们从 /a 导航到一个相对路径 b，如果没有配置 append，则路径为 /b，如果配了，则为 /a/b
+        *
+        * 2.tag
+        * 默认值: "a"
+        * 有时候想要 <router-link> 渲染成某种标签，例如 <li>。 于是我们使用 tag prop 类指定何种标签，同样它还是会监听点击，触发导航。
+        */
+        const ComponentA = {
+            template: `
+                <div>
+                    我是组件A
+                    <router-view></router-view>
+                    <p>append属性当前路由下添加基础路径.例:当前路径为/a,导航到to="child",如果有append则路径为/a/child,否则为/child</p>
+                    <p>tag属性可以让router-link渲染在页面上时为指定的tag标签</p>
+                    <router-link to="child" append tag="h3">点击显示a子路由</router-link>
+                </div>
+        `
+        }
+        const ComponentB = {
+            template: `
+                <h3>
+                    我是组件B
+                </h3>
+        `
+        }
+        const ChildA = {
+            template: '<p>我是子组件a</p>'
+        }
+
+        const routes = [
+            {
+                path: '/a', component: ComponentA, children: [
+                    { path: 'child', component: ChildA }
+                ]
+            },
+            { path: '/b', component: ComponentB }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <style>
+        .completed {
+            color: gray;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <!-- 按回车触发 @keydown.enter　-->
+            <input type="text" v-model="inputText" @keydown.enter="addItem">
+        </div>
+
+        <div id="listBox">
+            <div v-for="(item,index) in todos" :key="index">
+                <label :for="'checkbox-'+item.id" :class="{completed:item.completed}">
+                    <input type="checkbox" :id="'checkbox-'+item.id" :checked="item.completed"
+                        @click="toggleTodo(item.id)">
+                    {{item.text}}
+                </label>
+                <button @click="del(item.id)">del</button>
+            </div>
+        </div>
+        
+        <div id="buttonBox">
+            <button @click="changeShowType('ALL')">ALL</button>
+            <button @click="changeShowType('ACTIVED')">ACTIVED</button>
+            <button @click="changeShowType('COMPLETED')">COMPLETED</button>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                inputText: "",
+                //原始数据
+                items: [{
+                    id: 0,
+                    text: 'aaa',
+                    completed: false
+                }, {
+                    id: 1,
+                    text: 'bbb',
+                    completed: false
+                }, {
+                    id: 2,
+                    text: 'ccc',
+                    completed: true
+                }],
+                showType: 'ALL'
+            },
+            computed: {
+                //使用计算属性拿到要展示的数据，它依赖于原始数据，当原始数据发生变化，它也会随之发生变化
+                todos() {
+                    //显示全部
+                    if (this.showType === 'ALL') {
+                        return this.items
+                    } else if (this.showType === 'ACTIVED') {　//显示进行中的事件
+                       //filter 返回一个新的数组
+                        return this.items.filter(item => !item.completed)
+                    } else if (this.showType === 'COMPLETED') {　　//显示已完成的事件
+                        return this.items.filter(item => item.completed)
+                    }
+                }
+            },
+            methods: {
+                //添加
+                addItem() {
+                    this.items.push({
+                        id: new Date().toLocaleTimeString(),//用时间戳设置一个唯一的id
+                        text: this.inputText,
+                        completed: false
+                    })
+                    this.inputText = ""
+                },
+                //切换是否完成
+                toggleTodo(id) {
+                    this.items.forEach((element, index) => {
+                        if (element.id == id) {
+                            this.$set(this.items[index], 'completed', !this.items[index].completed)
+                        }
+                    });
+                },
+                //改变展示方式
+                changeShowType(type) {
+                    this.showType = type;
+                },
+                //删除　
+                del(id) {
+                    for (let i = 0; i < this.items.length; i++) {
+                        if(this.items[i].id == id){
+                            //根据　id　找到索引，然后删除
+                            this.items.splice(i,1)
+                            return;
+                        }
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

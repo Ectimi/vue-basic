@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>router-link的replace属性</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <!-- 
+        设置 replace 属性的话，当点击时，会调用 router.replace() 而不是 router.push()，于是导航后不会留下 history 记录。 
+        此例子可以看到，点击 user 后，不能点击浏览器的返回按钮
+    -->
+    <div id="app">
+        <router-view></router-view>
+        <router-link :to="{ name: 'user', params: { userId: 123 }}" replace>user</router-link>
+    </div>
+
+    <script>
+        const user = {
+            template: `
+                <div>
+                    <p>我是 user 页面 </p>
+                    <p>我的 userId 是：{{$route.params.userId}}</p>
+                </div>
+            `
+        }
+
+        const routes = [
+            { name: 'user', path: '/user', component: user }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

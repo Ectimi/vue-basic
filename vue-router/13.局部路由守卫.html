@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>局部路由守卫</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+        <router-link to="/a">A组件</router-link>
+        <router-link to="/b">B组件</router-link>
+    </div>
+
+    <script>
+        const ComponetA = {
+            template: '<div>我是组件A</div>',
+            
+            //记得执行 next()
+            beforeRouteEnter(to, from, next) {
+                console.log('从别的组件进入该组件时执行')
+                // 在渲染该组件的对应路由被 confirm 前调用
+                // 不！能！获取组件实例 `this`
+                // 因为当守卫执行前，组件实例还没被创建
+                next();
+            },
+            beforeRouteUpdate(to, from, next) {
+                console.log('当前路由发生改变时执行')
+                // 在当前路由改变，但是该组件被复用时调用
+                // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+                // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+                // 可以访问组件实例 `this`
+                next();
+            },
+            beforeRouteLeave(to, from, next) {
+                console.log('离开当前组件时执行')
+                // 导航离开该组件的对应路由时调用
+                // 可以访问组件实例 `this`
+                next();
+            }
+        }
+        const ComponetB = {
+            template: '<div>我是组件B</div>'
+        }
+
+        const routes = [
+            { path: '/a', component: ComponetA },
+            { path: '/b', component: ComponetB }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路由的动态匹配</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+        <div v-for="f in friends" :key="f">
+            <router-link v-bind:to="'/friend/'+ f">{{f}}</router-link>
+        </div>
+    </div>
+
+    <script>
+        const Friend = {
+            template: '<div> 你正在跟{{$route.params.name}}聊天<br><button @click="showRouter">展示当前路由信息</button></div>',
+            mounted() {
+                console.log('路由发生切换,开始一段新的网络请求')
+            },
+            methods: {
+                showRouter() {
+                    //通过router-link直接展示的组件可以通过
+                    //todo: this.$route 获取到当前路由的路径配置相关数据
+                    console.log(this.$route)
+                    // todo:动态路由匹配到的字符串可以通过$route.params.动态路径属性名 获取
+                    console.log(this.$route.params.name)
+                }
+            }
+        }
+
+        /*  
+        *   动态路由匹配 /:属性名,代表当前路径可以匹配任何字符串
+        *
+        *   注意动态路由匹配设置多段路径匹配 {path: '/friend/:name/myid/:id', component: Friend}   params:{name: xxx,id: xxx}
+        *
+        *   注意若果以当前demo为例 从/friend/小明 跳转到 /friend/小刚 原来的组件实例会被复用。
+        *   因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。
+        *   不过，这也意味着组件的生命周期钩子不会再被调用，具体看此例子的 mounted 生命周期函数
+        *
+        *   复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) $route 对象：
+
+            const User = {
+                template: '...',
+                watch: {
+                    '$route' (to, from) {
+                    // 对路由变化作出响应...
+                    }
+                }
+            }
+        */
+        const routes = [
+            //动态匹配获取参数 $route.params.属性名
+            //这里获取name，使用 $route.params.name
+            { path: '/friend/:name', component: Friend }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                friends: ['小明', '小刚', '小华', '小雷', '小白']
+            },
+            //这里可监听路由的变化
+            watch: {
+                // to 有到的意思，表示要到哪里去
+                // from 是来自的意思，表示从哪个路由过来的
+                $route(to, from) {
+                    console.log('变化后的路由==>',to)
+                    console.log('变化前的路由==>',from)
+                }
+            },
+            router
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>条件渲染</title>
+    <script src="vue.js"></script>
+    <style>
+        .des{
+            color:red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            v-show 与 v-if 的使用方法相同,两个区别为
+            v-show只是通过css隐藏了当前元素,
+            v-if直接将当前元素移除,下次展示时需要重新渲染
+            在项目开发中频繁展示隐藏的元素请使用 v-show 节约开销   v-if渲染开销高于v-show
+        -->
+
+        <!-- v-show 只是简单地切换元素的 CSS 属性 display。 -->
+        <h3 v-show="ok">v-show</h3>
+
+
+        <!--
+            v-if="布尔值" 实现元素的条件渲染
+            v-if       中当值为真时渲染该元素,否则不渲染
+            v-else-if  当v-if不成立时判断该指令,若该指令为时渲染该组件,否则不渲染
+            v-else     当以上两个指令都不成立时渲染该元素,否则不渲染
+        -->
+        <div v-if="type === 'A'">
+            A
+        </div>
+        <div v-else-if="type === 'B'">
+            B
+        </div>
+        <div v-else-if="type === 'C'">
+            C
+        </div>
+        <div v-else>
+            Not A/B/C
+        </div>
+
+        <br>
+
+        <!--
+            
+            vue为了更高效的渲染元素 在v-if中使用就地复用方法,并不是重新渲染元素,
+            以下的v-if并没有切换元素,切换 loginType 将不会清除用户已经输入的内容,只是修改了同一个元素的placeholder
+            但是有时候开发人员不想使用复用切换元素时,需要给指定切换的元素给一个值唯一key属性(让vue识别当前元素是唯一的不可复用的)
+        -->
+        <p class="des">以下没有添加 key vue会采用利用策略，不会清空输入框内容，只是变更 placeholder属性</p>
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address">
+        </template>
+
+        <br>
+
+        <p class="des">以下添加了唯一的 key ,每次切换时，输入框都将被重新渲染</p>
+        <!-- <label> 元素仍然会被高效地复用，因为它们没有添加 key 属性。 -->
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username" key="username-input">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address" key="email-input">
+        </template>
+
+        <br>
+        <br>
+
+        <button @click="toggleLoginType()">Toggle login type</button>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                ok:true,
+                type: 'A',
+                loginType: 'username'
+            },
+            methods: {
+                toggleLoginType() {
+                    this.loginType = this.loginType === 'username' ? 'email' : 'username';
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

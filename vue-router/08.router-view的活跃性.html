@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>router-view的活跃性</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <!-- 使用keep-alive可以保证组件的活跃性，如果不使用，那么使用路由切换组件时，组件会被重新渲染，不会保留输入框的内容 -->
+
+    <div id="app">
+        <!--保证组件的活跃性-->
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
+
+        <router-link to="/a">A</router-link>
+        <router-link to="/b">B</router-link>
+    </div>
+
+    <script>
+        const ComponentA = {
+            template: `
+                <div>
+                    我是组件A
+                    <p>{{str}}</p>
+                    <input v-model="str">
+                </div>
+                `,
+            data() {
+                return { str: '' }
+            }
+        }
+
+        const ComponentB = {
+            template: '<p>我是B组件</p>'
+        }
+
+        const routes = [
+            { path: '/a', component: ComponentA },
+            { path: '/b', component: ComponentB }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>js导航</title>
+</head>
+
+<body>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+
+    <script>
+        const ComponetA = {
+            template: '<div>我是组件A</div>'
+        }
+        const ComponetB = {
+            template: '<div>我是组件B</div>'
+        }
+
+        const routes = [
+            { path: '/a', component: ComponetA },
+            { path: '/b', component: ComponetB }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+    </script>
+
+    <div id="app">
+        <router-view></router-view>
+        <button @click="routerGo">back</button>
+        <button @click="pushToA">push to A</button>
+        <button @click="replaceToB">replace to B</button>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            router,
+            methods: {
+                pushToA() {
+                    // push(location, ?完成跳转的回调函数, ?跳转操作被中断的回调)
+                    this.$router.push('/a')
+                },
+                replaceToB() {
+                    // replace 与 push方法参数完全相同,replace将跳转的路径替换掉当前路径
+                    this.$router.replace('/b')
+                },
+                routerGo() {
+                    // go(n) 该方法接收一个整数,如果n为正代表从当前浏览记录前进n个浏览记录地址
+                    // 如果n为负代表从当前浏览记录返回n个浏览记录地址
+                    // 下面的例子就是返回上一个浏览器记录
+                    this.$router.go(-1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

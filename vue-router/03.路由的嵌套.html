@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>路由的嵌套</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <style>
+        .red{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+   
+
+    <script>
+        const Movies = {
+            template: `
+                <div>
+                    <router-view></router-view>
+                    <button @click="showRoute">show</button>
+                    <ul>
+                        <li v-for="m in movies" :key="m">
+                            <router-link :to="$route.path+'/'+m">{{m}}</router-link>
+                        </li>
+                    </ul>
+                </div>
+        `,
+            data() {
+                return {
+                    movies: ['阿丽塔', '流浪地球', '驯龙高手', '飞驰人生']
+                }
+            },
+            methods: {
+                showRoute() {
+                    console.log(this.$route)
+                }
+            }
+        }
+
+        const Cinema = {
+            template: '<div>我是影院页面</div>'
+        }
+
+        const DetailMovie = {
+            template: `
+                <div style="width: 100%;height: 100%;position: fixed;left: 0;top: 0;background: #ccc">
+                    <h4>电影详情</h4>
+                    你正在浏览
+                    <span class="red">{{$route.params.name}}</span>
+                    电影的详情
+                </div>
+            `
+        }
+    </script>
+
+    <div id="app">
+        <router-view></router-view>
+        <div class="tabbar">
+            <div>
+                <router-link to="/movies">电影</router-link>
+            </div>
+            <div>
+                <router-link to="/cinema">影院</router-link>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const routes = [
+            {
+                path: '/movies', component: Movies, //二级子路由配置
+                children: [
+                    {
+                        path: ':name',
+                        component: DetailMovie
+                    }
+                ]
+            },
+            { path: '/cinema', component: Cinema }
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+
+        new Vue({
+            el: '#app',
+            router
+        })
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>class绑定</title>
+    <script src="vue.js"></script>
+    <style>
+        .active {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <!-- 绑定 class 的方法 -->
+
+    <div id="app">
+        <!--
+        1. 对象语法 传给 v-bind:class 一个对象，以动态地切换 class：
+            以下 active , text-danger 这两个个 class 存在与否将分别取决于数据属性 isActive , hasError的 truthiness(真值,如果为ture则存在,为false则不存在)
+
+            绑定的数据对象不必内联定义在模板里：
+            以下两种写法效果是一致的
+        -->
+        <div>以下为对象语法：</div>
+        <div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }">对象语法一的active</div>
+        <div v-bind:class="classObject">对象语法二的active</div>
+        <br>
+
+        <!--
+            2.  数组语法 
+                可以把一个数组传给 v-bind:class，以应用一个 class 列表：
+                如果想根据条件切换列表中的 class，可以用三元表达式：
+                数组语法中也可以使用对象语法：
+        -->
+        <div>以下为数组语法：</div>
+        <!-- 以下渲染为 <div class="active text-danger"></div> -->
+        <div v-bind:class="[activeClass, errorClass]">数组语法的active</div>
+
+        <!-- 以下写法将始终添加 errorClass，但是只有在 isActive 为真时才添加 activeClass。 -->
+        <div v-bind:class="[isActive ? activeClass : '', errorClass]">数组中使用三元表达式的 active</div>
+
+        <!-- 当有多个条件 class 时使用三元表达式有些繁琐，此时可以使用对象语法 -->
+        <div v-bind:class="[{ active: isActive }, errorClass]">数组中使用对象语法的 active</div>
+        <br>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                isActive: true,
+                hasError: false,
+                classObject: {
+                    active: true,
+                    'text-danger': false
+                },
+                activeClass: 'active',
+                errorClass: 'text-danger',
+            }
+        })
+    </script>
+</body>
+
+</html>

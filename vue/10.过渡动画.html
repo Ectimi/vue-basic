@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>过渡动画</title>
+    <script src="vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            background: #00a800;
+            overflow: hidden;
+        }
+
+        .scale-enter {
+            height: 0;
+        }
+
+        .scale-enter-to {
+            height: 100px;
+        }
+
+        .scale-enter-active,
+        .scale-leave-active {
+            transition: all 0.5s linear;
+        }
+
+        .scale-leave-to {
+            transform: translateX(100px) rotateZ(-180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="toggleFn">显示隐藏</button>
+        <!--
+            想让元素 实现动画过渡效果需要给该元素外部包含一个transition元素
+            如果没有指定 name 属性，则类名默认以　v- 开头　
+            过渡的类名：　v-enter v-enter-active  v-enter-to  v-leave v-leave-active v-leave-to
+            如果在transition元素中指定name属性 例:name="scale",
+            这样当该元素进入(需要显示)时,
+                进入的第一帧的       class名为 scale-enter
+                进入的目标样式       class名为 scale-enter-to
+                整个进入动画过程中   class名为 scale-enter-active
+
+                离开的第一帧的       class名为 scale-leave
+                离开的目标样式       class名为 scale-leave-to
+                整个离开动画过程中   class名为 scale-leave-active
+        -->
+        <transition name="scale">
+            <div class="box" v-show="show">213123123</div>
+        </transition>
+
+        <!-- 
+            自定义过渡的类名
+            可以通过以下 attribute 来自定义过渡类名：
+
+            enter-class
+            enter-active-class
+            enter-to-class (2.1.8+)
+            leave-class
+            leave-active-class
+            leave-to-class (2.1.8+) 
+
+            他们的优先级高于普通的类名，这对于 Vue 的过渡系统和其他第三方 CSS 动画库，如 Animate.css 结合使用十分有用。
+        -->
+        <div id="example-3">
+            <p>以下是自定义类名配合Animate.css动画库</p>
+            <button @click="display = !display">
+                Toggle render
+            </button>
+            <transition 
+                name="custom-classes-transition" 
+                enter-active-class="animated tada"
+                leave-active-class="animated bounceOutRight"
+            >
+                <p v-if="display">hello</p>
+            </transition>
+        </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                show: false,
+                display:true
+            },
+            methods: {
+                toggleFn() {
+                    this.show = !this.show
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

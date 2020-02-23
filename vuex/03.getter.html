@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>getters</title>
+    <script src="vue.js"></script>
+    <script src="vuex.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-for="(item,index) in $store.getters.doneTodos" :key="index">
+            id:{{item.id}} - text:{{item.text}} - done:{{item.done}}
+        </div>
+        <div>完成个数：{{doneTodosCount}}</div>
+
+        <br>
+        <div>-------------------------</div>
+        <br>
+
+        <div>使用 mapGetters 辅助函数后，可以直接获取属性</div>
+        <div v-for="(item,index) in doneTodos" >
+            id:{{item.id}} - text:{{item.text}} - done:{{item.done}}
+        </div>
+        <div>完成个数：{{doneTodosCount}}</div>
+        <div>作者：{{author}}</div>
+    </div>
+
+
+    <script>
+        const store = new Vuex.Store({
+            state: {
+                todos: [
+                    { id: 1, text: 'aaa', done: true },
+                    { id: 2, text: 'bbb', done: false },
+                    { id: 3, text: 'ccc', done: true }
+                ],
+            },
+            //getters 相当于计算属性，它的值依赖于 state 里的属性的值，它的依赖被缓存起来，如果其依赖的值发生变化，它也会发生变化
+            //获取 $store.getters.属性名
+            getters: {
+                //第一个参数 state 就是表示 上面的 state,第二个参数就是表示当前这个 getters 可以直接 getters.属性名 获取相应的值
+                doneTodos: (state, getters) => {
+                    return state.todos.filter(todo => todo.done)
+                },
+                doneTodosCount: (state, getters) => {
+                    return getters.doneTodos.length
+                }
+            }
+        })
+
+        /*  
+            mapGetters 辅助函数
+            mapGetters 辅助函数仅仅是将 store 中的 getter 映射到局部计算属性：
+        */
+        let mapGetters = Vuex.mapGetters;
+
+        new Vue({
+            el: '#app',
+            store,
+            computed: {
+                doneTodosCount() {
+                    return this.$store.getters.doneTodosCount
+                },
+                // 使用对象展开运算符将 getter 混入 computed 对象中
+                ...mapGetters([
+                    'doneTodos',
+                    // ...
+                ])
+            }
+        })
+    </script>
+</body>
+
+</html>

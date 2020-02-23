@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>style绑定</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+
+    <!-- 绑定 style 的方法  v-bind:style-->
+
+    <div id="app">
+        <!-- 1. 对象语法 -->
+        <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">对象语法绑定内联样式的</div>
+
+        <!-- 直接绑定到一个样式对象通常更好，这会让模板更清晰： -->
+        <div v-bind:style="styleObject">对象语法绑定内联样式的</div>
+        <br>
+        <!-- 2.数组语法 组语法可以将多个样式对象应用到同一个元素上-->
+        <div v-bind:style="[baseStyles, overridingStyles]">数组语法</div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                activeColor: 'red',
+                fontSize: 30,
+                styleObject: {
+                    color: 'red',
+                    fontSize: '30px'
+                },
+                baseStyles:{
+                    margin:'0px',
+                    color:'blue'
+                },
+                overridingStyles:{
+                    fontSize:'20px'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

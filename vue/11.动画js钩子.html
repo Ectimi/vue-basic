@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>动画js钩子</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <style>
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: deeppink;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            JavaScript 钩子
+            可以在属性中声明 JavaScript 钩子
+
+            <transition
+                v-on:before-enter="beforeEnter"
+                v-on:enter="enter"
+                v-on:after-enter="afterEnter"
+                v-on:enter-cancelled="enterCancelled"
+
+                v-on:before-leave="beforeLeave"
+                v-on:leave="leave"
+                v-on:after-leave="afterLeave"
+                v-on:leave-cancelled="leaveCancelled"
+            > 
+
+            当只用 JavaScript 过渡的时候，在 enter 和 leave 中必须使用 done 进行回调。否则，它们将被同步调用，过渡会立即完成。
+
+            推荐对于仅使用 JavaScript 过渡的元素添加 v-bind:css="false"，Vue 会跳过 CSS 的检测。这也可以避免过渡过程中 CSS 的影响。
+        -->
+  <!-- ... -->
+</transition>
+        <button @click="toggleFn">点赞</button>
+        <transition 
+            @before-enter="beforeEnter" 
+            @enter="enter" 
+            @after-enter="afterEnter" 
+            @before-leave="beforeLeave"
+            @leave="leave" 
+            @after-leave="afterLeave"
+            :class = "false"
+        >
+            <div class="logo" v-show="show"></div>
+        </transition>
+
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                show: false
+            },
+            methods: {
+                toggleFn() {
+                    this.show = !this.show
+                },
+
+                beforeEnter(el) {
+                    // beforeEnter 接收一个参数 el当前正要进入的DOM元素
+                    console.log('元素准备开始进入', el)
+                },
+
+                enter(el, done) {
+                    //enter 接收两个参数 参数一当前进入的DOM元素, 参数二 是一个方法告诉vue当前动画结束了
+                    console.log(el.offsetHeight) // 强制刷新页面引起页面渲染
+
+                    el.addEventListener('transitionend', () => {
+                        // 动画过渡结束
+                        console.log('动画过渡结束!')
+                        done() // 执行参数二done 告诉vue自定义动画执行完毕
+                    })
+                    el.style.transition = 'all .3s linear'
+                    el.style.webkitTransition = 'all .3s linear'
+                    el.style.transform = 'scale(2)'
+                    console.log('元素已经开始进入')
+                },
+
+                afterEnter(el) {
+                    // el 接收一个参数当前过渡的DOM
+                    this.show = false
+                    el.style.display = 'none'
+                    el.style.transition = 'none'
+                    el.style.webkitTransition = 'none'
+                    el.style.transform = 'scale(1)'
+
+                    console.log('动画进入完毕')
+                },
+
+                beforeLeave(el) {
+                    console.log('元素准备开始离开')
+                },
+
+                leave(el, done) {
+                    console.log('元素已经开始离开')
+                },
+
+                afterLeave(el) {
+                    console.log('动画离开完毕')
+                }
+
+
+            }
+        })
+    </script>
+</body>
+
+</html>

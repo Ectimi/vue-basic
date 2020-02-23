@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插值语法</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <!--
+        文本插值  使用双大括号 {{js表达式}} vue实例中的数据
+        属性插值  v-bind:属性="js表达式" 可缩写为 :属性="js表达式"
+
+        js 表达式包含变量 三目运算符 数据运算 函数调用
+    -->
+    <div id="app">
+        <!-- 变量 -->
+        <p>姓名：{{name}}</p>
+
+        <!-- 三目运算符 -->
+        <p>是否成年：{{age>18?'成年':'未成年'}}</p>
+
+        <!-- 字符串拼接 -->
+        <p>{{welcome + name + '欢迎您的到来！'}}</p>
+
+        <!-- 数据运算 -->
+        <p>{{age+12}}</p>
+
+        <!-- 函数调用 -->
+        <p>{{getInfo()}}</p>
+
+        <!--
+            vue 文本插值自带防注入攻击 将html内容转化为纯文本
+        -->
+        <p>以下会把html转化为纯文本</p>
+        {{htmlText}}
+
+        <!--
+            vue允许插入html内容(v-html 指令),注意:该方法不要暴露给用户
+        -->
+        <p>以下使用 v-html 把标签文本渲染出来</p>
+        <div v-html="htmlText"></div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                name: 'J',
+                age: 20,
+                welcome: 'hello',
+                htmlText: '<p style="color:red">hello world</p>'
+            },
+            methods: {
+                getInfo() {
+                    return '我是' + this.name;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

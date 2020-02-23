@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vuex引言</title>
+    <script src="vue.js"></script>
+    <script src="vuex.js"></script>
+</head>
+<body>
+    <div id="app">
+        <component-a :name="name" @change-name="change"></component-a>
+    </div>
+
+    <script>
+        /*
+        * 1.什么是 vuex?
+        *   Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化.
+        *   可以简单地把 vuex 理解为数据管理的容器，在 vuex 中的数据组件间是可以共享的
+        *
+        * 2.为什么需要 vuex ？
+        *   在vue中，如果子组件需要使用父组件的数据，那么需要父组件进入传值，但是，这是一种单身数据流，即子组件是无法直接修改父组件的属性的值，
+        *   如果子组件想要修改父组件的值，只能使用自定义事件，间接调用父组件的修改方法，
+        *   具体看下面的例子：
+        *       这个例子中，a组件想要修改父组件的name，需要在子组件定义一个方法来触发称之为事件，通过自定义事件来触发父组件的修改方法
+                如果仅仅只是 “父组件>子组件”  的层级，那么修改还算简单，但是，如果层级一旦多了起来，
+                比如 “父组件>子组件A>子组件B”, 如果子组件B想要修改父组件的值，那么写起来就非常麻烦，也不便于代码维护
+        *
+        *   所以， vuex 的作用之一就是解决上述问题，可以把父组件、子组件都需要用到数据放到 vuex 中，这样可共享，方便统一管理
+        */
+        const a = {
+            template:`
+                <div>
+                    <p>组件a</p>
+                    <P>这个name属性是父组件传递过来的: {{name}}</P>
+                    <button @click="change('sarash')">修改name的值</button>
+                </div>
+            `,
+            props:{
+                name:{
+                    type:String,
+                    default:'alice'
+                }
+            },
+            methods:{
+                change(value){
+                    this.$emit('change-name',value)
+                }
+            }
+        }
+
+        new Vue({
+            el:'#app',
+            data:{
+                name:'mike'
+            },
+            components:{
+                'component-a':a,
+            },
+            methods:{
+                change(value){
+                    this.name = value;
+                }
+            }
+        })
+    </script>
+</body>
+</html>

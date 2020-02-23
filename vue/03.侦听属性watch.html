@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>侦听属性 watch</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<!-- 
+    使用watch实现字符串翻转
+-->
+<div id="app">
+    <input type="text" v-model="str">
+    <p>原字符串 : {{str}}</p>
+
+    <!-- 以下一开始为空,当 str 发生改变时,会获取 str 的新值进行反转 -->
+    <p>反转后字符串:{{reverseStr}}</p>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            str: 'hello world',
+            reverseStr: '',
+        },
+        // watch配置,监听指定的data属性,
+        // 结构为使用data指定属性名生成的函数, 该函数接收两个参数 参数一当前属性改变后的值,参数二当前属性改变前的值
+        // watch一开始不触发,计算属性一开始就触发
+        watch: {
+            str(newVal, oldVal) {
+                console.log('str发生改变了');
+                console.log('newVal:' + newVal + '  oldVal:' + oldVal)
+                this.reverseStr = newVal.split('').reverse().join('')
+            }
+        }
+    })
+</script>
+</body>
+</html>

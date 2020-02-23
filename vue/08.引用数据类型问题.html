@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>引用数据类型问题</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            数组更新检测
+
+            变异方法：
+            Vue 将被侦听的数组的变异方法(会改变调用了这些方法的原始数组的方法)进行了包裹，所以它们也将会触发视图更新。这些被包裹过的方法包括：
+            push pop shift unshift splice sort reverse
+
+            替换方法，非变异方法：filter、concat 和 slice 。它们不会改变原始数组，而总是返回一个新数组
+            当使用非变异方法时，可以用新数组替换旧数组
+         -->
+
+        <div v-for="(item,index) in array" :key=index>{{item}}</div>
+        <!-- 以下按钮调用了 push 方法触发了视图更新 -->
+        <button @click="add1">使用变异方法添加元素</button>
+        <!-- 以下按钮调用了 concat 方法返回了一个新数组 -->
+        <button @click="add2">使用非变异方法添加元素</button>
+
+        <!-- 
+            由于 JavaScript 的限制，Vue 不能检测以下数组的变动：
+            当你利用索引直接设置一个数组项时，例如：vm.items[indexOfItem] = newValue
+            当你修改数组的长度时，例如：vm.items.length = newLength 
+        -->
+        <button @click="change(0,100)">修改数组</button>
+
+        <br>
+        <!-- 还是由于 JavaScript 的限制，Vue 不能检测对象属性的添加或删除： -->
+        <p>姓名：{{userProfile.name}}</p>
+        <button @click="changeName('Mike')">修改姓名</button>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                array: [1, 2, 3, 4, 5],
+                userProfile: {
+                    name: 'Anika'
+                }
+            },
+            methods: {
+                add1() {
+                    this.array.push(this.array.length + 1)
+                },
+                add2() {
+                    this.array = this.array.concat([this.array.length + 1])
+                },
+                change(index, value) {
+                    //以下写法无效
+                    // this.array[index] = value
+
+                    //正确写法
+                    this.$set(this.array, index, value)
+                    //或者
+                    // Vue.set(this.array,index,value)
+                },
+                changeName(value){
+                    //以下写法无效
+                    // this.userProfile.name = value;
+
+                    //正确写法
+                    this.$set(this.userProfile,'name',value);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

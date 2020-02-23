@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mutation</title>
+    <script src="vue.js"></script>
+    <script src="vuex.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        count: {{count}}
+        <button @click="add">加10</button>
+        <button @click="decrease({number:1  })">减 1</button>
+    </div>
+    <script>
+        /* 
+            更改 Vuex 的 store 中的状态的唯一方法是提交 mutation
+            Mutation 必须是同步函数
+        */
+        const mapState = Vuex.mapState
+
+        const store = new Vuex.Store({  
+            state: {
+                count: 1
+            },
+            mutations: {
+                // payload 载荷，即参数。在大多数情况下，载荷应该是一个对象，这样可以包含多个字段并且记录的 mutation 会更易读：
+                increment(state, payload) {
+                    state.count += payload.amount
+                },
+                decrease(state,payload){
+                    state.count -= payload.number
+                }
+            }
+        })
+        
+
+        //mapMutations
+        let mapMutations = Vuex.mapMutations
+
+        new Vue({
+            el: '#app',
+            store,
+            computed:{
+                ...mapState([
+                    'count',
+                ])
+            },
+            methods:{
+                add(){
+                    //使用 commit 提交一个 mutation
+                    this.$store.commit('increment',{
+                        amount:10
+                    })
+                },
+                ...mapMutations(['decrease'])
+            }
+        })
+    </script>
+</body>
+
+</html>

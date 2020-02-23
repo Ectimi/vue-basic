@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>action</title>
+    <script src="vue.js"></script>
+    <script src="vuex.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        count: {{count}}
+        <button @click="add">加1</button>
+        <button @click="decrease">减 1</button>
+    </div>
+
+    <script>
+        /* 
+            Action 提交的是 mutation，而不是直接变更状态。
+            Action 可以包含任意异步操作。
+            Action 通过 store.dispatch 方法触发：
+        */
+
+        const store = new Vuex.Store({
+            state: {
+                count: 0
+            },
+            mutations: {
+                increment(state) {
+                    state.count++
+                },
+                decrease(state,payload){
+                    state.count -= payload.number
+                }
+            },
+            actions: {
+                // Action 函数接受一个与 store 实例具有相同方法和属性的 context 对象，
+                //因此你可以调用 context.commit 提交一个 mutation，或者通过 context.state 和 context.getters 来获取 state 和 getters
+                increment(context) {
+                    context.commit('increment')
+                },
+                decrease(context){
+                    context.commit('decrease',{number:1})
+                }
+            }
+        })
+
+        const mapState = Vuex.mapState
+
+        //mapActions
+        const mapActions = Vuex.mapActions
+
+        new Vue({
+            el: '#app',
+            store,
+            computed: {
+                ...mapState([
+                    'count',
+                ])
+            },
+            methods: {
+                add(){
+                    this.$store.dispatch('increment')
+                },
+                ...mapActions([
+                    'decrease'
+                ])
+            }
+        })
+    </script>
+</body>
+
+</html>

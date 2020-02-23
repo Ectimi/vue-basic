@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>router-link的class</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <style>
+        a {
+            text-decoration: none;
+            color: #000018;
+        }
+
+        a.active {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        const Home = {
+            template: '<div>我是主页</div>'
+        }
+
+        const Discover = {
+            template: '<div>我是发现页面</div>'
+        }
+
+        const Mine = {
+            template: '<div>我是个人页面</div>'
+        }
+
+        const routes = [
+            { path: '/', component: Home },
+            { path: '/discover', component: Discover },
+            { path: '/mine', component: Mine }
+        ]
+        const router = new VueRouter({
+            routes,
+            linkActiveClass: 'active',
+            linkExactActiveClass: 'exact-active'
+        })
+    </script>
+
+    <div id="app">
+        <h2>局部路由class</h2>
+        <router-view></router-view>
+        <!--
+            当路由与当前router-link路径匹配成功时,
+            当前元素会自动添加一个active类名"默认名 router-link-active",
+            如果想自定义改类名
+                方法一局部配置 在对应的router-link中设置active-class属性
+                方法二全局配置 在初始化router时,配置 linkActiveClass 选项 见代码26行
+                active-class 是一种非严格匹配 例 /  与 /xxxx 匹配返回true
+
+            exact 严格匹配 在router-link上添加exact属性,当路径必须全等是router-link才会被激活active
+                局部修改 在router-link标签内 设置exact-active-class属性
+                全局修改router-link-exact-active class名,初始化router中配置 linkExactActiveClass
+    -->
+        <router-link to="/" active-class="active" exact>home</router-link>
+        <router-link to="/discover">discover</router-link>
+        <router-link to="/mine" exact-active-class="exact">mine</router-link>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+
+</html>

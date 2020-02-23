@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插槽</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <navigation-link url="/profile">
+            这是插槽的内容，这里会替换掉组件里的　slot 标签
+            <div>这里不仅可以写文本，也可以插入其它标签和组件</div>
+        </navigation-link>
+
+        <!-- 下面这个没有提供　slot　内容，所以默认显示　Sumbit -->
+        <submit-button></submit-button>
+        <!-- 下面这个提供的slot内容是　save ，所以默认显示　save -->
+        <submit-button>save</submit-button>
+
+        <br>
+
+        <base-layout>
+            <template v-slot:header>
+                <h1>Here might be a page title</h1>
+            </template>
+
+            <!-- 第二个插槽没有提供名字，所以默认名是　default -->
+            <template v-slot:default>
+                <p>A paragraph for the main content.</p>
+                <p>And another one.</p>
+            </template>
+
+            <template v-slot:footer>
+                <p>Here's some contact info</p>
+            </template>
+        </base-layout>
+    </div>
+    <script>
+        Vue.component('navigation-link', {
+            template: `
+                <a v-bind:href="url" class="nav-link">
+                    <!--下面这个是插槽-->
+                    <slot></slot>
+                </a>
+            `
+        })
+
+        Vue.component('submit-button', {
+            // slot标签中间也可以插入内容，如果在使用组件的时候，没有提供　slot　内容，那么　slot标签中间的内容会默认显示
+            template: `
+                <button type="submit">
+                    <slot>Sumbit</slot>
+                </button>
+            `
+        })
+
+        /*
+        * 具名插槽
+        * 有时我们需要多个插槽。例如对于一个带有如下模板的 <base-layout> 组件：
+        * 对于这样的情况，<slot> 元素有一个特殊的 attribute：name。这个 attribute 可以用来定义额外的插
+        * 一个不带 name 的 <slot> 出口会带有隐含的名字“default”。
+        */
+        Vue.component('base-layout', {
+            template: `
+            <div class="container">
+                <header>
+                    <!-- 我们希望把页头放这里 -->
+                    <slot name="header"></slot>
+                </header>
+                <main>
+                    <!-- 我们希望把主要内容放这里 -->
+                    <slot></slot>
+                </main>
+                <footer>
+                    <!-- 我们希望把页脚放这里 -->
+                    <slot name="footer"></slot>
+                </footer>
+            </div>
+            `
+        })
+        new Vue({
+            el: '#app',
+            data: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

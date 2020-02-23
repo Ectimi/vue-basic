@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件处理</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div id="example-1">
+            <!-- 1.监听事件: 可以用 v-on 指令监听 DOM 事件，并在触发时运行一些 JavaScript 代码 -->
+            <button v-on:click="counter += 1">Add 1</button>
+            <p>The button above has been clicked {{ counter }} times.</p>
+        
+            <!-- 2. 事件处理方法 v-on 还可以接收一个需要调用的方法名称 -->
+            <button v-on:click="greet">Greet</button>
+
+            <br>
+
+            <!-- 3.有时也需要访问原始的 DOM 事件。可以用特殊变量 $event 把它传入方法： -->
+            <button v-on:click="warn('Form cannot be submitted yet.', $event)">
+                Submit
+            </button>
+
+            <!-- 
+                4.事件修饰符 ：
+                .stop 阻止事件冒泡捕获
+                .prevent 阻止表单的提交
+                .capture 使用捕获事件
+                .self 只能在自身元素上触发
+                .once 事件只触发一次,触发后将不再触发
+                .passive 不拦截默认事件 ，尤其能够提升移动端的性能
+
+                注：不要把 .passive 和 .prevent 一起使用，因为 .prevent 将会被忽略，同时浏览器可能会向你展示一个警告
+            -->
+            <!-- stop修饰符 -->
+            <p>.stop</p>
+            <div @click="stopClick('div',$event)" class="box">
+                <button @click.stop="stopClick('button',$event)">stop</button>
+            </div>
+            
+            <!-- .prevent修饰符 -->
+            <p>.prevent</p>
+            <div>
+                <form @submit.prevent="preventSubmit">
+                    <input type="submit">
+                </form>
+            </div>
+            
+            <!-- .capture修饰符 注意该修饰需要写他的包含元素上 -->
+            <p>.capture</p>
+            <div class="box" @click.capture="captureClick('div')">
+                <button @click="captureClick('btn')">capture</button>
+            </div>
+            
+            <!-- .self修饰符 -->
+            <p>.self</p>
+            <div class="box" @click.self="selfClick">
+                <button>click</button>
+            </div>
+            
+            <!-- .once修饰符 -->
+            <p>.once</p>
+            <button @click.once="onceClick">click</button>
+
+            <!--
+                5.按键修饰符
+                按键码      .enter .tab .delete(删除/退格)  .esc .space .up .down .left .right
+                按键码链式调用 代表或语法  例: .enter.delete (单独按enter可以触发,单独按delete键也可以触发)
+                系统修饰符  与普通按键可以做链式调用 .alt  .ctrl .shift .mate(不同操作系统 windos中win键 mac里的command)
+                系统修饰符和普通按键码一起代表,必须在按下系统修饰符的前提下再按普通按键码才会触发
+                严格系统修饰符 修饰符.exact
+                系统修饰符链式调用是不严格的, 例 .shift 按住shift触发  按住任意系统修饰符+shift也会触发
+                        .shift.exact 只有shift系统修饰符按下会触发 (当同时按下其他系统修饰符时不会触发)
+                键盘事件的任意event.key名都可以作为案件修饰符
+
+            -->
+            <p>
+                <textarea @keydown="keydownFnc"></textarea>
+            </p>
+            <textarea @keydown.enter.delete="keydownFnc"></textarea>
+            <h3>系统修饰符 alt + s</h3>
+            <textarea @keydown.shift.s="keydownFnc"></textarea>
+            <h3>严格修饰符 alt + s</h3>
+            <textarea @keydown.shift.s.exact="keydownFnc"></textarea>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                counter: 0,
+                name: 'Vue.js'
+            },
+            methods: {
+                greet: function (event) {
+                    // `this` 在方法里指向当前 Vue 实例
+                    alert('Hello ' + this.name + '!')
+                    // `event` 是原生 DOM 事件
+                    if (event) {
+                        alert(event.target.tagName)
+                    }
+                },
+                warn: function (message, event) {
+                    // 现在我们可以访问原生事件对象
+                    if (event) {
+                        event.preventDefault()
+                    }
+                    alert(message)
+                },
+                stopClick(name, evt) {
+                    console.log(name + '的点击事件被触发点击了', evt.target);
+                },
+                preventSubmit() {
+                    console.log('表单提交被阻止')
+                },
+                captureClick(name) {
+                    console.log(name + '被触发了');
+                },
+                selfClick() {
+                    console.log('selfClick');
+                },
+                onceClick() {
+                    console.log('onceClick')
+                },
+                keydownFnc(evt) {
+                    console.log(evt.key)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

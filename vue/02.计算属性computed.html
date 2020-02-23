@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算属性 computed</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <!-- 
+        要求:实现字符串 message 反转
+    -->
+    <div id="app">
+        <p>原字符串: {{message}}</p>
+        <!-- 
+            1.使用插值表达式实现 
+            缺点:在模板中放入太多的逻辑会让模板过重且难以维护
+        -->
+        <p>以下是使用插值表达式实现:</p>
+        <P>{{message.split('').reverse().join('')}}</P>
+
+        <!-- 
+            2.使用方法 
+        -->
+        <p>以下使用方法来实现:</p>
+        <p>{{reverseMessage()}}</p>
+
+        <!-- 
+            3.使用计算属性 
+        -->
+        <p>以下使用计算属性来实现</p>
+        <p>{{rMessage}}</p>
+
+        <br>
+        <p>-------------------</p>
+
+        <p>计算属性 fullName ==> {{fullName}}</p>
+        <button @click ="changeComputed()">修改计算属性</button>
+    </div>
+    <script>
+        /*
+            可以看到,使用方法和使用计算属性的代码是一样的
+            两种方式的最终结果确实是完全相同的。
+            然而，不同的是计算属性是基于它们的响应式依赖进行缓存的。
+            只在相关响应式依赖发生改变时它们才会重新求值。
+            这就意味着只要 message 还没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数
+
+            为什么需要缓存？
+            假设我们有一个性能开销比较大的计算属性 A，它需要遍历一个巨大的数组并做大量的计算。然后我们可能有其他的计算属性依赖于 A 。
+            如果没有缓存，我们将不可避免的多次执行 A 的 getter！如果不希望有缓存，可以用方法来替代。
+        */
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello',
+                firstName: 'zhang',
+                lastName: 'san'
+            },
+            methods: {
+                reverseMessage() {
+                    return this.message.split('').reverse().join('');
+                },
+                changeComputed(){
+                    /*
+                    * 一般情况下,计算属性的值不能直接修改,因为默认是没有 setter的,
+                    * 以下是错误写法,会报错
+                    */
+                    // this.rMessage = 'change' //报错,因为 rMessage 默认没有setter属性
+
+                    /*
+                    * 如果非要修改计算属性的值,只能修改自己定义的,带有 setter 属性的计算属性
+                    */
+                    this.fullName = 'zhang feng'
+
+                }
+            },
+
+            //计算属性默认只有 getter ，不过在需要时你也可以提供一个 setter ：
+            computed: {
+                // 以下以方法的形式来写,实际默读调用其 getter
+                rMessage() {
+                    return this.message.split('').reverse().join('');
+                },
+                
+                /*
+                * 使用对象方式来写,需要自己添加 getter 和 setter
+                */
+                
+                fullName: {
+                    // getter
+                    get: function () {
+                        return this.firstName + ' ' + this.lastName
+                    },
+                    // setter
+                    set: function (newValue) {
+                        var names = newValue.split(' ')
+                        this.firstName = names[0]
+                        this.lastName = names[names.length - 1]
+                    }
+                }
+                
+            }
+        })
+    </script>
+</body>
+
+</html>

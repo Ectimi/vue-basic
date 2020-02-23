@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>state</title>
+    <script src="vue.js"></script>
+    <script src="vuex.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <counter></counter>
+        <br>
+        <p>使用 mapState 可以直接获取 state </p>
+        <div>作者：{{author}}</div>
+    </div>
+
+    <script>
+        //vuex
+        // 如果在模块化构建系统中(即在 vue-cli 中) ，请确保在开头调用了 Vue.use(Vuex)
+        const store = new Vuex.Store({
+            //state相当于vue 的 data，用来保存属性，只不过这里的属性是共享的，所有组件均可访问
+            //获取方式： $store.state.属性名
+            //当然，由于这是在 html 单文件里，也可以 直接 store.state.属性名  获取
+            state: {
+                count: 0 ,
+                author:'mike'
+            }
+        })
+
+        // 创建一个 Counter 组件
+        const Counter = {
+            template: `<div>{{ count }}</div>`,
+            computed: {
+                count() {
+                    return this.$store.state.count // 在 .vue 文件里需要这样写
+
+                    //或者
+                    // return store.state.count
+                }
+            }
+        }
+
+        // mapState 辅助函数
+        let mapState = Vuex.mapState
+
+        const app = new Vue({
+            el: '#app',
+            // 把 store 对象提供给 “store” 选项，这可以把 store 的实例注入所有的子组件
+            store,
+            components: { Counter },
+            computed:{
+                ...mapState([
+                    'author',
+                    // ...
+                ])
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>路由组件传参</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+    <script>
+
+        const ComponentA = {
+            props: ['name', 'age'],
+            template: `<div>
+                        <p>下面的代码使得组件的耦合性太高,当前组件必须配合路由使用,没有路由时无法体现其功能</p>
+                        <p>解决方法使用props代替params,实现组件的解耦</p>
+                       <!--
+                            <p>姓名:{{$route.params.name}}</p>
+                            <p>年龄:{{$route.params.age}}</p>
+                        -->
+                         <p>姓名:{{name}}</p>
+                         <p>年龄:{{age}}</p>
+                   </div>`
+        }
+
+        const ComponentB = {
+            props: ['status'],
+            template: `
+           <div>静态数据 status:{{status}}</div>
+        `
+        }
+
+        const ComponentC = {
+            props: ['status', 'age'],
+            template: `
+           <div>静态数据 status:{{status}} 动态路由信息 age{{age}}</div>
+        `
+        }
+
+        const router = new VueRouter({
+            // VueRouter 默认是哈希模式
+            // mode: 'history', 将路由模式修改为history模式
+            routes: [
+                // TODO:将params中的属性以props的形式传递的方法 在routes配置中设置props属性
+                // props属性有三种值,
+                // 第一种布尔值, 当值为true时 route.params将会被设置为组件的props属性
+                { path: '/a', name: 'a', component: ComponentA, props: true },
+                // 第二种对象, 对象的键值对将会作为组件的props属性与属性值传递到组件内部(该方法适用于静态params)
+                { path: '/b', name: 'b', component: ComponentB, props: { status: 404 } },
+                // 第三种函数, 将静态数据与路由相关数据进行结合
+                { path: '/c', name: 'c', component: ComponentC, props: (route) => ({ status: 200, age: route.query.age }) }
+            ]
+        })
+    </script>
+
+    <div id="app">
+        <router-view></router-view>
+        <router-link :to="{name:'a',params:{name:'小明',age:18}}">A</router-link>
+        <router-link :to="{name:'b',params:{status:18}}">B</router-link>
+        <router-link :to="{path:'/c',query:{age:17}}">C</router-link>
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            router
+        })
+    </script>
+</body>
+
+</html>

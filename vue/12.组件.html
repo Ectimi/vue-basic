@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <button-counter></button-counter>
+        <local-component :message="message"></local-component>
+        <other-component></other-component>
+    </div>
+    <script>
+        //全局组件　不用注册，可以直接使用，在开发中如果一个组件需要经常被引入，那么可以把它注册为全局组件，这样可以省略　import　步骤
+        // 定义一个名为 button-counter 的新组件
+        Vue.component('button-counter', {
+            data: function () {
+                return {
+                    count: 0
+                }
+            },
+            template: `
+                <div>
+                    <button v-on:click="count++">You clicked me {{ count }} times.</button>
+                </div>`
+        })
+
+        //局部组件
+        var localComponent = {
+            template: `
+                <div>
+                    <p>我是局部组件 {{name}}</p>
+                    <p>消息：{{message}}</p>
+                </div>`,
+            //子组件使用 props 接收父组件传递的属性
+            props: ['message'],
+            data() {
+                return {
+                    name: 'local'
+                }
+            }
+        }
+
+        //另一个局部组件
+        var otherComponent = {
+            template: `
+                <div>
+                    <p>我是另一个子组件</p>
+                </div>
+            `,
+            /*
+            *    props　接收的属性可以进行类型检查
+            */
+            props: {
+                // 基础的类型检查 (`null` 和 `undefined` 会通过任何类型验证)
+                propA: Number,
+                // 多个可能的类型
+                propB: [String, Number],
+                // 必填的字符串
+                propC: {
+                    type: String,
+                    required: true //必填
+                },
+                // 带有默认值的数字
+                propD: {
+                    type: Number,
+                    default: 100
+                },
+                // 带有默认值的对象
+                propE: {
+                    type: Object,
+                    // 对象或数组默认值必须从一个工厂函数获取
+                    default: function () {
+                        return { message: 'hello' }
+                    }
+                },
+                // 自定义验证函数
+                propF: {
+                    validator: function (value) {
+                        // 这个值必须匹配下列字符串中的一个
+                        return ['success', 'warning', 'danger'].indexOf(value) !== -1
+                    }
+                }
+            }
+        }
+
+        //这是最大的父组件
+        new Vue({
+            el: '#app',
+            data: {
+                message: '父组件传递的信息'
+            },
+            components: {
+                //在 html 文件中，这里的命名方式，不能使用这种命名　localComponent ，因为html不区分大小写
+                //使用　vue-cli　开发里，在　.vue文件中才可以这样命名　localComponent
+                'local-component': localComponent,
+                'other-component':otherComponent
+            }
+        })
+    </script>
+</body>
+
+</html>

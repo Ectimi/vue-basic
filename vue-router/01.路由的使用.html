@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路由的使用方法</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <style>
+        #app {
+            position: relative;
+            margin: 20px auto;
+            width: 320px;
+            height: 568px;
+            border: 1px solid #ccc;
+        }
+
+        .tabbar {
+            display: flex;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 56px;
+            border-top: 1px solid #ccc;
+            background: #efefef;
+        }
+
+        .tabbar-item {
+            flex: 1;
+            height: 100%;
+            text-align: center;
+            line-height: 56px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 路由出口 -->
+        <!-- 路由匹配到的组件将渲染在这里 -->
+        <router-view></router-view>
+
+        <div class="tabbar">
+            <div class="tabbar-item">
+                <router-link to="/wechat">微信</router-link>
+            </div>
+            <div class="tabbar-item">
+                <router-link to="/contact">通讯录</router-link>
+            </div>
+            <div class="tabbar-item">
+                <router-link to="/discover">发现</router-link>
+            </div>
+            <div class="tabbar-item">
+                <router-link to="/mine">我</router-link>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const Wechat = {
+            template: '<div class="we-chat">我是微信页面</div>',
+            created() {
+                console.log(1)
+            }
+        }
+
+        const Contact = {
+            template: `<div class="contact">
+            我是联系人页面
+            <div @click="go">返回</div>
+            </div>`,
+
+            methods: {
+                go() {
+                    // 通过注入路由器，我们可以在任何组件内通过 this.$router 访问路由器，也可以通过 this.$route 访问当前路由：
+                    //这里通过$router的push方法跳转到 wechat页面
+                    this.$router.push('/wechat');
+                }
+            }
+        }
+
+        const Discover = {
+            template: '<div class="discover">我是发现页面</div>'
+        }
+
+        const MineScreen = {
+            template: '<div class="mine-screen">我的页面</div>'
+        }
+
+        // 配置路由信息
+        const routes = [
+            { path: '/wechat', component: Wechat },
+            { path: '/contact', component: Contact },
+            { path: '/discover', component: Discover },
+            { path: '/mine', component: MineScreen }
+        ]
+
+        // 将路由信息转化为 VueRouter实例
+        const router = new VueRouter({
+            // routes: routes
+            routes
+        })
+
+        // 将router配置到vue实例中
+        new Vue({
+            el: '#app',
+            router
+        })
+
+    </script>
+</body>
+
+</html>
