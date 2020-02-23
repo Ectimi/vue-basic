@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>生命周期</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        {{name}}
+        <p ref="p">p标签</p>
+    </div>
+
+    <script>
+
+        Vue.component('my-component', {
+            data() {
+                return {
+                    name: '小明'
+                }
+            },
+            template: '<div>{{name}}</div>',
+        })
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                name: 1231
+            },
+            beforeCreate() {
+                // 实例化初始之后,属性监听 事件的注册 watch 还没开始(不存在)
+                console.log('vue实例将要被创建', this.name) // undefined
+            },
+            created() {
+                //  这一步数据监听 属性 方法 watch 事件的注册都已经完成,但是页面还没有渲染,不存在dom元素
+                // 不要在这一步进行dom操作,服务器端渲染期间created不会被触发
+                console.log('vue实例创建完毕', this.name, this.$refs.p)
+            },
+            beforeMount() {
+                // 页面开始渲染之前
+                console.log('vue准备渲染页面', this.$refs.p)
+            },
+            mounted() {
+                // 这是我们才可以访问$el 和 $refs 的dom节点
+                //  mounted不会保证该组件内部的子组件是否渲染完毕, vue实例给我们提供了一个方法$nextTick
+                this.$nextTick(() => {
+                    console.log('该回调函数内,可以保证所有组件都全部渲染完毕')
+                })
+                console.log('页面渲染完毕', this.$refs.p)
+            },
+            beforeUpdate() {
+                console.log('vue有属性发生改变,但是页面还没有更新');
+            },
+            updated() {
+                //  updated不会保证数据更新后该所有的子组件是否渲染完毕, vue实例给我们提供了一个方法$nextTick
+                console.log('vue有属性发生改变,并且页面已经重新渲染完毕')
+            },
+            beforeDestroy() {
+                // 该函数内部仍然可以访问当前组件的所有属性和方法,我们一般在该函数内部做内存回收
+                // 清除计时器 删除自定义监听的事件
+                console.log('元素将要被销毁了')
+            },
+            destroyed() {
+                console.log('元素销毁完毕')
+            }
+        })
+    </script>
+</body>
+
+</html>
