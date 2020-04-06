@@ -2,4 +2,4 @@
 
 ##### 文件均是html文件，可下载后直接打开。
 
-希望能帮助到刚入门的新手，后期会更新完整的项目
+已更新一个练手项目，有api，可预览，具体请稳步 [vue-music](https://github.com/Ectimi/vue-music)
