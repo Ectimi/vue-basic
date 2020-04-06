@@ -2,4 +2,4 @@
 
 ##### 文件均是html文件，可下载后直接打开。
 
-已更新一个练手项目，有api，可预览，具体请稳步 [vue-music](https://github.com/Ectimi/vue-music)
+已更新一个练手项目，有api，可预览，具体请移步 [vue-music](https://github.com/Ectimi/vue-music)
